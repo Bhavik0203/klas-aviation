@@ -258,7 +258,7 @@ export default function Home() {
               
               <div className="prose prose-lg text-gray-600 leading-relaxed space-y-6">
                 <p className="text-xl text-gray-700 font-medium">
-                  Transworld Jets' hyper-personalized luxury fleet caters to ultra-high-net-worth business and luxury travelers seeking discretion, uncompromising luxury, and bespoke experiences.
+                  Transworld Jets&apos; hyper-personalized luxury fleet caters to ultra-high-net-worth business and luxury travelers seeking discretion, uncompromising luxury, and bespoke experiences.
                 </p>
                 
                 <p>
