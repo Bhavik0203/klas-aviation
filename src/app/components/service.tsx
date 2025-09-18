@@ -93,7 +93,7 @@ const Service = () => {
       number: 2,
       title: "Fine Dining and Catering",
       description: "From gourmet meals using the finest ingredients to bespoke menus tailored to your preferences, our flying chefs are committed to making each dining experience an unforgettable journey above the clouds.",
-      illustration: "/images/TJsurya-01.webp",
+      illustration: "/images/means.jpg",
       position: "right"
     },
     {
