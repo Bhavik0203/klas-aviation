@@ -93,7 +93,7 @@ const Service = () => {
       number: 2,
       title: "Fine Dining and Catering",
       description: "From gourmet meals using the finest ingredients to bespoke menus tailored to your preferences, our flying chefs are committed to making each dining experience an unforgettable journey above the clouds.",
-      illustration: "/images/TJsurya-02.webp",
+      illustration: "/images/TJsurya-01.webp",
       position: "right"
     },
     {
@@ -107,7 +107,7 @@ const Service = () => {
       number: 4,
       title: "Personalized Flight Planning",
       description: "We understand that every trip has unique requirements, ensuring a seamless and efficient travel experience as per private jet flights.",
-      illustration: "/images/TJsurya-03.webp",
+      illustration: "/images/TJsurya-02.webp",
       position: "right"
     },
    
