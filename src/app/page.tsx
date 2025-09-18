@@ -3,12 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from "framer-motion";
+import { useRef } from "react";
 import Service from "./components/service";
 
 export default function Home() {
   const [openFaq, setOpenFaq] = useState(0); // First FAQ open by default
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { scrollYProgress } = useScroll();
   
   // Contact form state
   const [formData, setFormData] = useState({
@@ -17,6 +21,14 @@ export default function Home() {
     contact: '',
     message: ''
   });
+
+  // Loading effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll detection
   useEffect(() => {
@@ -78,8 +90,54 @@ export default function Home() {
     }
   ];
 
+  // Loading screen
+  if (isLoading) {
+    return (
+      <motion.div 
+        className="fixed inset-0 bg-gradient-to-br from-blue-900 to-slate-900 flex items-center justify-center z-50"
+        initial={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div 
+          className="text-center"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            className="w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          />
+          <motion.h2 
+            className="text-2xl font-bold text-white mb-2"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            KLAS Aviation
+          </motion.h2>
+          <motion.p 
+            className="text-white/80"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            Elevating your journey...
+          </motion.p>
+        </motion.div>
+      </motion.div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <motion.div 
+      className="min-h-screen bg-white"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
@@ -213,11 +271,22 @@ export default function Home() {
         </nav>
       </header>
 
+      {/* Scroll Progress Indicator */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-teal-500 z-50 origin-left"
+        style={{ scaleX: scrollYProgress }}
+      />
+
       {/* Section 0: About */}
      
       {/* Section 1: Banner */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 2, ease: "easeOut" }}
+        >
           <Image
             src="/images/bg1.png"
             alt="Luxury Aviation Background"
@@ -225,57 +294,147 @@ export default function Home() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/60"></div>
-        </div>
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+          <motion.div 
+            className="absolute inset-0 bg-black/60"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5, delay: 0.5 }}
+          />
+        </motion.div>
+        <motion.div 
+          className="relative z-10 text-center text-white max-w-4xl mx-auto px-6"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+        >
+          <motion.h1 
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
             Elevate Your Journey
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
+          </motion.h1>
+          <motion.p 
+            className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+          >
             Experience luxury aviation redefined. Premium private jet services connecting you to the world with unparalleled comfort and sophistication.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-blue-600 cursor-pointer text-white px-8 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors">
+          </motion.p>
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.8 }}
+          >
+            <motion.button 
+              className="bg-blue-600 cursor-pointer text-white px-8 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors"
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
               Book Your Flight
-            </button>
-            <button className="border-2 border-white cursor-pointer text-white px-8 py-2 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-800 transition-colors">
+            </motion.button>
+            <motion.button 
+              className="border-2 border-white cursor-pointer text-white px-8 py-2 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-800 transition-colors"
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
               View Fleet
-            </button>
-          </div>
-        </div>
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </section>
-      <section id="about" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
+      <motion.section 
+        id="about" 
+        className="py-20 bg-gradient-to-br from-slate-50 to-blue-50"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
         <div className="container mx-auto max-w-6xl px-6">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
+            <motion.div 
+              className="space-y-8"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              viewport={{ once: true, amount: 0.3 }}
+            >
               <div>
-                <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight">
+                <motion.h2 
+                  className="text-4xl md:text-5xl font-bold text-gray-800 mb-6 leading-tight"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  viewport={{ once: true }}
+                >
                   Transworld Jets
-                </h2>
-                <div className="w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full mb-8"></div>
+                </motion.h2>
+                <motion.div 
+                  className="w-24 h-1 bg-gradient-to-r from-blue-600 to-blue-400 rounded-full mb-8"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "6rem" }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  viewport={{ once: true }}
+                />
               </div>
               
-              <div className="prose prose-lg text-gray-600 leading-relaxed space-y-6">
-                <p className="text-xl text-gray-700 font-medium">
+              <motion.div 
+                className="prose prose-lg text-gray-600 leading-relaxed space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                viewport={{ once: true }}
+              >
+                <motion.p 
+                  className="text-xl text-gray-700 font-medium"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  viewport={{ once: true }}
+                >
                   Transworld Jets&apos; hyper-personalized luxury fleet caters to ultra-high-net-worth business and luxury travelers seeking discretion, uncompromising luxury, and bespoke experiences.
-                </p>
+                </motion.p>
                 
-                <p>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                  viewport={{ once: true }}
+                >
                   Currently, we operate flights to Europe and the Middle East. Our fleet of super midsize business jets will connect Europe, Africa to Asia & the Middle East.
-                </p>
+                </motion.p>
                 
-                <p>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                  viewport={{ once: true }}
+                >
                   Our fleet of private jets offers unparalleled comfort, style, and sophistication, ensuring that every journey is a truly unforgettable experience. Additionally, we believe that luxury should extend to every aspect of your journey, including your in-flight dining experience.
-                </p>
-              </div>
-
-            
-            </div>
+                </motion.p>
+              </motion.div>
+            </motion.div>
 
             {/* Right Content - Aircraft Image */}
-            <div className="relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
+            >
+              <motion.div 
+                className="relative rounded-3xl overflow-hidden shadow-2xl"
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.3 }}
+              >
                 <div className="aspect-[4/3] relative bg-gradient-to-br from-slate-800 to-slate-900">
                   <Image
                     src="/images/Nakastra1.webp"
@@ -284,44 +443,98 @@ export default function Home() {
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                  <div className="absolute bottom-6 left-6 text-white z-10">
+                  <motion.div 
+                    className="absolute bottom-6 left-6 text-white z-10"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                    viewport={{ once: true }}
+                  >
                     <h3 className="text-2xl font-bold mb-2">Premium Fleet</h3>
                     <p className="text-white/80">Luxury redefined in the skies</p>
-                  </div>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Floating Stats Cards */}
-              <div className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+              <motion.div 
+                className="absolute -bottom-6 -right-6 bg-white rounded-2xl p-6 shadow-xl border border-gray-100"
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-1">24/7</div>
                   <div className="text-sm text-gray-600">Support</div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="absolute -top-6 -left-6 bg-white rounded-2xl p-6 shadow-xl border border-gray-100">
+              <motion.div 
+                className="absolute -top-6 -left-6 bg-white rounded-2xl p-6 shadow-xl border border-gray-100"
+                initial={{ opacity: 0, scale: 0.8, y: -20 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.2 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+              >
                 <div className="text-center">
                   <div className="text-3xl font-bold text-blue-600 mb-1">100%</div>
                   <div className="text-sm text-gray-600">Luxury</div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
       {/* Section 2: Our Fleet */}
-      <section id="fleet" className="py-20 bg-gray-50">
+      <motion.section 
+        id="fleet" 
+        className="py-20 bg-gray-50"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <div className="container max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Our Premium Fleet</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-gray-800 mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              Our Premium Fleet
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
               Discover our collection of world-class aircraft, each meticulously maintained and equipped with the finest amenities for your ultimate comfort.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
             {/* Jet Card 1 - TJ Nakashtra */}
-            <div className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <motion.div 
+              className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="relative h-80">
                 <Image
                   src="/images/TJ-Nakashtra.png"
@@ -353,10 +566,17 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Jet Card 2 - TJ Aakash */}
-            <div className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <motion.div 
+              className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="relative h-80">
                 <Image
                   src="/images/TJ-Aakash.webp"
@@ -388,10 +608,17 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Jet Card 3 - TJ Surya */}
-            <div className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <motion.div 
+              className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="relative h-80">
                 <Image
                   src="/images/TJ-Pushpak.webp"
@@ -423,10 +650,17 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Jet Card 4 - TJ Vayu */}
-            <div className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer">
+            <motion.div 
+              className="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 cursor-pointer"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="relative h-80">
                 <Image
                   src="/images/tj-vayu.webp"
@@ -458,13 +692,25 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
       {/* Section 4: Call to Action */}
-      <section className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0">
+      <motion.section 
+        className="relative py-20 overflow-hidden"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.3 }}
+      >
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 1.5 }}
+          viewport={{ once: true }}
+        >
           <Image
             src="/images/bg2.png"
             alt="Call to Action Background"
@@ -472,22 +718,56 @@ export default function Home() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-blue-900/80"></div>
-        </div>
-        <div className="relative z-10 container mx-auto px-6 text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Soar Above the Ordinary?</h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto text-blue-100">
+        </motion.div>
+        <motion.div 
+          className="relative z-10 container mx-auto px-6 text-center text-white"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl md:text-5xl font-bold mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
+            Ready to Soar Above the Ordinary?
+          </motion.h2>
+          <motion.p 
+            className="text-xl mb-8 max-w-3xl mx-auto text-blue-100"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+            viewport={{ once: true }}
+          >
             Experience the pinnacle of luxury aviation. Book your private jet today and discover a new standard of travel excellence.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors">
+          </motion.p>
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
+            viewport={{ once: true }}
+          >
+            <motion.button 
+              className="bg-white text-blue-900 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors"
+              whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(255, 255, 255, 0.2)" }}
+              whileTap={{ scale: 0.95 }}
+            >
               Get a Quote
-            </button>
-            <button className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-900 transition-colors">
+            </motion.button>
+            <motion.button 
+              className="border-2 border-white text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white hover:text-blue-900 transition-colors"
+              whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+              whileTap={{ scale: 0.95 }}
+            >
               Call +1 (555) 123-4567
-            </button>
-          </div>
-        </div>
-      </section>
+            </motion.button>
+          </motion.div>
+        </motion.div>
+      </motion.section>
 
     <section id="services">
     <Service/>
@@ -568,54 +848,118 @@ export default function Home() {
 
       
       {/* Section 5: FAQ */}
-      <section id="faq" className="py-20 bg-gray-50">
+      <motion.section 
+        id="faq" 
+        className="py-20 bg-gray-50"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">Frequently Asked Questions</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-gray-800 mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              Frequently Asked Questions
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-gray-600 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
               Find answers to common questions about our private jet services and booking process.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <div className="max-w-4xl mx-auto space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <button
+              <motion.div 
+                key={index} 
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                whileHover={{ scale: 1.01, boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)" }}
+              >
+                <motion.button
                   className="w-full px-6 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
                   onClick={() => setOpenFaq(openFaq === index ? -1 : index)}
+                  whileHover={{ backgroundColor: "rgba(249, 250, 251, 0.8)" }}
+                  whileTap={{ scale: 0.99 }}
                 >
                   <h3 className="text-xl font-bold text-gray-800 pr-4">{faq.question}</h3>
                   <div className="flex-shrink-0">
-                    <svg
-                      className="w-6 h-6 text-gray-600 transition-all duration-200"
+                    <motion.svg
+                      className="w-6 h-6 text-gray-600"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      animate={{ rotate: openFaq === index ? 45 : 0 }}
+                      transition={{ duration: 0.2 }}
                     >
                       {openFaq === index ? (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 12H6" />
                       ) : (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m6-6H6" />
                       )}
-                    </svg>
+                    </motion.svg>
                   </div>
-                </button>
-                <div
-                  className={`px-6 transition-all duration-300 ease-in-out ${
-                    openFaq === index 
-                      ? 'pb-6 opacity-100 max-h-96' 
-                      : 'pb-0 opacity-0 max-h-0 overflow-hidden'
-                  }`}
-                >
-                  <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
-                </div>
-              </div>
+                </motion.button>
+                <AnimatePresence>
+                  {openFaq === index && (
+                    <motion.div
+                      className="px-6 pb-6"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <motion.p 
+                        className="text-gray-600 leading-relaxed"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2, delay: 0.1 }}
+                      >
+                        {faq.answer}
+                      </motion.p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             ))}
           </div>
         </div>
-      </section>
-      <section id="contact" className="relative py-20 overflow-hidden">
-        <div className="absolute inset-0">
+      </motion.section>
+      <motion.section 
+        id="contact" 
+        className="relative py-20 overflow-hidden"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true, amount: 0.2 }}
+      >
+        <motion.div 
+          className="absolute inset-0"
+          initial={{ scale: 1.1 }}
+          whileInView={{ scale: 1 }}
+          transition={{ duration: 1.5 }}
+          viewport={{ once: true }}
+        >
           <Image
             src="/images/bg3.jpg"
             alt="Contact Background"
@@ -623,23 +967,60 @@ export default function Home() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black/50"></div>
-        </div>
+        </motion.div>
         <div className="relative z-10 container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Get In Touch</h2>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-white mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              Get In Touch
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-white/90 max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
               Ready to elevate your journey? Contact us today and let us create an unforgettable aviation experience tailored just for you.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <div className="max-w-2xl mx-auto">
+          <motion.div 
+            className="max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+          >
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
+              <motion.div 
+                className="grid md:grid-cols-2 gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+                viewport={{ once: true }}
+              >
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  viewport={{ once: true }}
+                >
                   <label htmlFor="name" className="block text-white text-sm font-medium mb-2">
                     Name
                   </label>
-                  <input
+                  <motion.input
                     type="text"
                     id="name"
                     name="name"
@@ -648,13 +1029,20 @@ export default function Home() {
                     required
                     className="w-full px-4 py-3 bg-transparent border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg"
                     placeholder="Your full name"
+                    whileFocus={{ scale: 1.02, borderColor: "rgba(255, 255, 255, 0.6)" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   />
-                </div>
-                <div>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.9 }}
+                  viewport={{ once: true }}
+                >
                   <label htmlFor="email" className="block text-white text-sm font-medium mb-2">
                     Email
                   </label>
-                  <input
+                  <motion.input
                     type="email"
                     id="email"
                     name="email"
@@ -663,15 +1051,22 @@ export default function Home() {
                     required
                     className="w-full px-4 py-3 bg-transparent border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg"
                     placeholder="your@email.com"
+                    whileFocus={{ scale: 1.02, borderColor: "rgba(255, 255, 255, 0.6)" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   />
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
               
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.0 }}
+                viewport={{ once: true }}
+              >
                 <label htmlFor="contact" className="block text-white text-sm font-medium mb-2">
                   Contact Number
                 </label>
-                <input
+                <motion.input
                   type="tel"
                   id="contact"
                   name="contact"
@@ -682,14 +1077,21 @@ export default function Home() {
                   maxLength={10}
                   className="w-full px-4 py-3 bg-transparent border border-white/40 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 rounded-lg"
                   placeholder="Enter 10-digit phone number"
+                  whileFocus={{ scale: 1.02, borderColor: "rgba(255, 255, 255, 0.6)" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 />
-              </div>
+              </motion.div>
 
-              <div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.1 }}
+                viewport={{ once: true }}
+              >
                 <label htmlFor="message" className="block text-white text-sm font-medium mb-2">
                   Message
                 </label>
-                <textarea
+                <motion.textarea
                   id="message"
                   name="message"
                   value={formData.message}
@@ -698,21 +1100,32 @@ export default function Home() {
                   rows={2}
                   className="w-full px-4 py-3 bg-transparent text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/30 border border-white/40 rounded-lg resize-none"
                   placeholder="Tell us about your travel requirements..."
-                ></textarea>
-              </div>
+                  whileFocus={{ scale: 1.02, borderColor: "rgba(255, 255, 255, 0.6)" }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                />
+              </motion.div>
 
-              <div className="text-center">
-                <button
+              <motion.div 
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.2 }}
+                viewport={{ once: true }}
+              >
+                <motion.button
                   type="submit"
                   className="bg-white text-gray-900 px-8 py-2 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-white/30"
+                  whileHover={{ scale: 1.05, boxShadow: "0 10px 25px rgba(255, 255, 255, 0.2)" }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
                 >
                   Submit Message
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
             </form>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer id="contact" className="bg-gray-900 text-white py-16">
@@ -784,6 +1197,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 }

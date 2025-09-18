@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Service = () => {
   const [animatedSteps, setAnimatedSteps] = useState<number[]>([]);
@@ -97,36 +98,42 @@ const Service = () => {
     },
     {
       number: 3,
-      title: "Personalized Flight Planning",
-      description: "We understand that every trip has unique requirements, ensuring a seamless and efficient travel experience as per private jet flights.",
-      illustration: "/images/TJsurya-03.webp",
+      title: "Customized Experiences",
+      description: "Whether it's celebrating a special occasion or seeking a truly one-of-a-kind adventure, our team is dedicated to turning your dreams into reality during your private jet flights.",
+      illustration: "/images/Nakastra3.webp",
       position: "left"
     },
     {
       number: 4,
-      title: "Customized Experiences",
-      description: "Whether it's celebrating a special occasion or seeking a truly one-of-a-kind adventure, our team is dedicated to turning your dreams into reality during your private jet flights.",
-      illustration: "/images/Nakastra3.webp",
+      title: "Personalized Flight Planning",
+      description: "We understand that every trip has unique requirements, ensuring a seamless and efficient travel experience as per private jet flights.",
+      illustration: "/images/TJsurya-03.webp",
       position: "right"
-    }
+    },
+   
   ];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 ">
-      <h2 
-        ref={titleRef}
-        className={`text-4xl font-bold text-center text-gray-900 mb-16 transition-all duration-1000 ease-out ${
-          titleAnimated 
-            ? 'opacity-100 translate-y-0' 
-            : 'opacity-0 translate-y-8'
-        }`}
+      <motion.h2 
+        className="text-4xl font-bold text-center text-gray-900 mb-16"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        viewport={{ once: true, amount: 0.5 }}
       >
         Our Services
-      </h2>
+      </motion.h2>
       
       <div className="relative">
         {/* Animated Zigzag Connecting Line */}
-        <div ref={lineRef} className="hidden md:block absolute left-1/2 top-0 bottom-0 transform -translate-x-1/2">
+        <motion.div 
+          className="hidden md:block absolute left-1/2 top-0 bottom-0 transform -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          viewport={{ once: true }}
+        >
           <svg 
             className="w-1 h-full" 
             viewBox="0 0 2 1200" 
@@ -184,75 +191,118 @@ const Service = () => {
               }
             }
           `}</style>
-        </div>
+        </motion.div>
 
         {steps.map((step, index) => (
-          <div 
+          <motion.div 
             key={step.number}
-            ref={(el) => {
-              stepRefs.current[index] = el;
-            }}
-            data-step={step.number}
             className={`flex flex-col md:flex-row items-center mb-16 ${
               step.position === 'right' ? 'md:flex-row-reverse' : ''
-            } transition-all duration-1000 ease-out ${
-              animatedSteps.includes(step.number) 
-                ? 'opacity-100 translate-y-0 translate-x-0' 
-                : step.position === 'right' 
-                  ? 'opacity-0 translate-y-12 translate-x-12' 
-                  : 'opacity-0 translate-y-12 -translate-x-12'
             }`}
-            style={{ transitionDelay: `${index * 200}ms` }}
+            initial={{ 
+              opacity: 0, 
+              y: 50, 
+              x: step.position === 'right' ? 50 : -50 
+            }}
+            whileInView={{ 
+              opacity: 1, 
+              y: 0, 
+              x: 0 
+            }}
+            transition={{ 
+              duration: 0.8, 
+              delay: index * 0.2,
+              ease: "easeOut"
+            }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             {/* Step Number Circle */}
-            <div className="flex-shrink-0 mb-6 md:mb-0 relative z-10">
-              <div className={`w-16 h-16 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg transition-all duration-700 ease-out ${
-                animatedSteps.includes(step.number) 
-                  ? 'scale-100 rotate-0' 
-                  : 'scale-75 rotate-180'
-              }`} style={{ transitionDelay: `${index * 300 + 100}ms` }}>
+            <motion.div 
+              className="flex-shrink-0 mb-6 md:mb-0 relative z-10"
+              initial={{ scale: 0.5, rotate: 180 }}
+              whileInView={{ scale: 1, rotate: 0 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.2 + 0.3,
+                type: "spring",
+                stiffness: 200
+              }}
+              viewport={{ once: true }}
+            >
+              <motion.div 
+                className="w-16 h-16 bg-teal-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg"
+                whileHover={{ scale: 1.1, boxShadow: "0 10px 25px rgba(20, 184, 166, 0.4)" }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
                 {step.number}
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Step Content */}
-            <div className={`flex-1 px-6 md:px-12 ${step.position === 'right' ? 'md:text-right' : 'md:text-left'} transition-all duration-800 ease-out ${
-              animatedSteps.includes(step.number) 
-                ? 'opacity-100 translate-y-0' 
-                : 'opacity-0 translate-y-6'
-            }`} style={{ transitionDelay: `${index * 300 + 200}ms` }}>
-              <h3 className="text-2xl font-bold underline text-gray-900 mb-4">
+            <motion.div 
+              className={`flex-1 px-6 md:px-12 ${step.position === 'right' ? 'md:text-right' : 'md:text-left'}`}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.6, 
+                delay: index * 0.2 + 0.4,
+                ease: "easeOut"
+              }}
+              viewport={{ once: true }}
+            >
+              <motion.h3 
+                className="text-2xl font-bold underline text-gray-900 mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.2 + 0.5
+                }}
+                viewport={{ once: true }}
+              >
                 {step.title}
-              </h3>
-              <p className="text-gray-600 text-lg leading-relaxed max-w-2xl">
+              </motion.h3>
+              <motion.p 
+                className="text-gray-600 text-lg leading-relaxed max-w-2xl"
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.5, 
+                  delay: index * 0.2 + 0.6
+                }}
+                viewport={{ once: true }}
+              >
                 {step.description}
-              </p>
-            </div>
+              </motion.p>
+            </motion.div>
 
             {/* Step Illustration */}
-            <div className="flex-shrink-0 mt-6 md:mt-0">
-              <div className={`relative transition-all duration-800 ease-out ${
-                animatedSteps.includes(step.number) 
-                  ? 'opacity-100 scale-100 rotate-0' 
-                  : 'opacity-0 scale-95 rotate-3'
-              }`} style={{ transitionDelay: `${index * 300 + 300}ms` }}>
+            <motion.div 
+              className="flex-shrink-0 mt-6 md:mt-0"
+              initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ 
+                duration: 0.7, 
+                delay: index * 0.2 + 0.5,
+                ease: "easeOut"
+              }}
+              viewport={{ once: true }}
+            >
+              <motion.div 
+                className="relative"
+                whileHover={{ scale: 1.05, rotate: 1 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
                 <Image 
                   src={step.illustration} 
                   alt={`Step ${step.number}`} 
                   width={300} 
                   height={300}
-                  className="rounded-lg shadow-lg transition-transform duration-500 hover:scale-105"
+                  className="rounded-lg shadow-lg"
                 />
-                {/* Decorative elements */}
-                {/* <div className={`absolute -top-4 -right-4 w-8 h-8 bg-teal-100 rounded-full opacity-60 transition-all duration-600 ${
-                  animatedSteps.includes(step.number) ? 'scale-100' : 'scale-0'
-                }`} style={{ transitionDelay: `${index * 300 + 500}ms` }}></div>
-                <div className={`absolute -bottom-4 -left-4 w-6 h-6 bg-blue-100 rounded-full opacity-60 transition-all duration-600 ${
-                  animatedSteps.includes(step.number) ? 'scale-100' : 'scale-0'
-                }`} style={{ transitionDelay: `${index * 300 + 600}ms` }}></div> */}
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         ))}
       </div>
     </div>
